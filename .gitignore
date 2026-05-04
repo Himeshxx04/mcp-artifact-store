@@ -29,3 +29,6 @@ Thumbs.db
 
 # Logs
 *.log
+
+# Claude Code context file — dev tool, not project docs
+CLAUDE.md
