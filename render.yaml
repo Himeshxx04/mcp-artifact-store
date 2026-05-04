@@ -1,0 +1,35 @@
+services:
+  # ── FastAPI Backend ────────────────────────────────────────────────────────
+  - type: web
+    name: mcp-artifact-store-api
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: python main.py
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: artifact-store-db
+          property: connectionString
+      - key: ALLOWED_ORIGINS
+        value: https://mcp-artifact-store.vercel.app
+      - key: DEBUG
+        value: false
+
+  # ── FastMCP Server ─────────────────────────────────────────────────────────
+  - type: web
+    name: mcp-artifact-store-mcp
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: python -m server.mcp_server
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: artifact-store-db
+          property: connectionString
+      - key: MCP_TRANSPORT
+        value: sse
+
+  # ── PostgreSQL Database ────────────────────────────────────────────────────
+databases:
+  - name: artifact-store-db
+    plan: free

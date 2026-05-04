@@ -116,10 +116,36 @@ mcp-artifact-store/
   - Run: python -m examples.codebase_auditor.main [optional/path]
 
 ## Currently working on
-- Pushing to GitHub + LinkedIn post
+- Deploying to Render (backend + MCP) + Vercel (dashboard)
 
 ## V1 Complete ✅
 All core features built and working.
+
+## Deployment architecture
+- FastAPI backend    → Render web service (python main.py, binds $PORT)
+- FastMCP server     → Render web service (python -m server.mcp_server, MCP_TRANSPORT=sse)
+- PostgreSQL         → Render managed DB (free tier, 1GB)
+- React dashboard    → Vercel (VITE_API_URL set to Render backend URL)
+- render.yaml        → one-click deploy config at project root
+
+## Deployment env vars
+Render (backend):
+  DATABASE_URL   → auto-injected from Render managed DB
+  ALLOWED_ORIGINS → https://your-app.vercel.app
+  DEBUG          → false
+
+Render (MCP server):
+  DATABASE_URL   → auto-injected from Render managed DB
+  MCP_TRANSPORT  → sse
+  PORT           → auto-injected by Render
+
+Vercel (dashboard):
+  VITE_API_URL   → https://mcp-artifact-store-api.onrender.com
+
+## Transport behaviour
+- Local:  MCP_TRANSPORT not set → stdio (used by LangGraph demo)
+- Remote: MCP_TRANSPORT=sse    → HTTP/SSE (deployable, anyone can connect)
+- Remote MCP URL: https://mcp-artifact-store-mcp.onrender.com/sse
 
 ## Dashboard (React + Vite + Tailwind)
 - Stack: React 19, Vite 8, Tailwind CSS v3

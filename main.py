@@ -6,6 +6,7 @@ from sqlalchemy.orm import Session
 from backend.routes.artifacts import router
 from backend.db.session import get_db
 import os
+import uvicorn
 
 app = FastAPI(
     title="MCP Artifact Store",
@@ -30,3 +31,9 @@ def health(db: Session = Depends(get_db)):
         return {"status": "ok", "version": "0.1.0"}
     except Exception:
         return JSONResponse(status_code=503, content={"status": "db_unavailable", "version": "0.1.0"})
+
+
+if __name__ == "__main__":
+    # Render injects PORT; locally defaults to 8000
+    port = int(os.getenv("PORT", 8000))
+    uvicorn.run("main:app", host="0.0.0.0", port=port)

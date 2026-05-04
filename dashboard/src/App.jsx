@@ -19,7 +19,9 @@ import StatsBar from "./components/StatsBar"
 import ArtifactTable from "./components/ArtifactTable"
 import DetailPanel from "./components/DetailPanel"
 
-const API = "http://127.0.0.1:8000"
+// Local: http://127.0.0.1:8000
+// Deployed: set VITE_API_URL in dashboard/.env.production
+const API = import.meta.env.VITE_API_URL ?? "http://127.0.0.1:8000"
 
 function App() {
   const [artifacts, setArtifacts]               = useState([])
