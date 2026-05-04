@@ -5,6 +5,23 @@ An open source MCP server that acts as a shared artifact store
 for multi-agent systems. Reduces context window bloat by storing
 large tool outputs and passing only artifact IDs between agents.
 
+## Claude Desktop config path (Windows — always edit this one)
+C:\Users\pande\AppData\Local\Packages\Claude_pzs8sxrjxfjjc\LocalCache\Roaming\Claude\claude_desktop_config.json
+
+## Claude Desktop MCP config rules (hard-learned)
+- Always write with UTF-8 NO BOM — use [System.IO.File]::WriteAllText with New-Object System.Text.UTF8Encoding($false)
+- PowerShell Set-Content -Encoding utf8 writes BOM → Claude Desktop fails to parse → silently reverts config
+- Claude Desktop overwrites config on shutdown (saves in-memory state) — must write file AFTER full quit, BEFORE reopen
+- Use `url` field for SSE? NO — Claude Desktop rejects it ("not valid MCP server configuration")
+- Use mcp-remote as stdio↔SSE bridge: command=npx, args=["-y","mcp-remote","<sse-url>"]
+- To edit config while Claude Desktop is closed: save the PowerShell one-liner, run it in a separate terminal
+
+## Deployed MCP server — Claude Desktop entry (mcp-remote bridge)
+"artifact-store": {
+  "command": "npx",
+  "args": ["-y", "mcp-remote", "https://mcp-artifact-store-mcp.onrender.com/sse"]
+}
+
 ## My profile
 - Name: Himesh Pandey, final year ECE, PES University Bangalore
 - Stack: Python, FastAPI, LangChain, LangGraph, MCP, SQLAlchemy
@@ -123,7 +140,7 @@ mcp-artifact-store/
   - Run: python -m examples.codebase_auditor.main [optional/path]
 
 ## Currently working on
-- Full stack deployed and live ✅ — verify end-to-end, then LinkedIn post
+- LinkedIn post
 
 ## V1 Complete ✅ — Fully Deployed
 All core features built, working, and live.
