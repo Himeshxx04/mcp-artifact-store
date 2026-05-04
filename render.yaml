@@ -3,6 +3,7 @@ services:
   - type: web
     name: mcp-artifact-store-api
     runtime: python
+    plan: free
     buildCommand: pip install -r requirements.txt
     startCommand: python main.py
     envVars:
@@ -19,6 +20,7 @@ services:
   - type: web
     name: mcp-artifact-store-mcp
     runtime: python
+    plan: free
     buildCommand: pip install -r requirements.txt
     startCommand: python -m server.mcp_server
     envVars:
