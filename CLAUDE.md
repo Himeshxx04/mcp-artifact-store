@@ -98,6 +98,13 @@ mcp-artifact-store/
 - server/tools/artifacts.py ✅
 - server/mcp_server.py ✅
 
+## Deployment fixes applied
+- alembic/env.py: read DATABASE_URL env var to override alembic.ini hardcoded 127.0.0.1 URL
+  — Render injects DATABASE_URL at build time; env.py was ignoring it, causing alembic upgrade head to fail
+  — Fix: `db_url = os.getenv("DATABASE_URL"); if db_url: config.set_main_option("sqlalchemy.url", db_url)`
+- render.yaml: added `plan: free` to both web services (was defaulting to paid $7/mo tier)
+- render.yaml: added `&& alembic upgrade head` to buildCommand (Render shell requires paid plan)
+
 ## Bug fixes applied (post-initial-build)
 - storage.py: write_artifact — artifact + audit log now commit in one atomic transaction (was two separate commits)
 - storage.py: delete_artifact — artifact delete + audit log now commit in one atomic transaction (was two separate commits)
@@ -116,10 +123,10 @@ mcp-artifact-store/
   - Run: python -m examples.codebase_auditor.main [optional/path]
 
 ## Currently working on
-- Deploying to Render (backend + MCP) + Vercel (dashboard)
+- Full stack deployed and live ✅ — verify end-to-end, then LinkedIn post
 
-## V1 Complete ✅
-All core features built and working.
+## V1 Complete ✅ — Fully Deployed
+All core features built, working, and live.
 
 ## Deployment architecture
 - FastAPI backend    → Render web service (python main.py, binds $PORT)
@@ -127,6 +134,13 @@ All core features built and working.
 - PostgreSQL         → Render managed DB (free tier, 1GB)
 - React dashboard    → Vercel (VITE_API_URL set to Render backend URL)
 - render.yaml        → one-click deploy config at project root
+
+## Live URLs
+- Dashboard:   https://mcp-artifact-store.vercel.app
+- Backend API: https://mcp-artifact-store-api.onrender.com
+- API Docs:    https://mcp-artifact-store-api.onrender.com/docs
+- MCP Server:  https://mcp-artifact-store-mcp.onrender.com/sse
+- Health:      https://mcp-artifact-store-api.onrender.com/health
 
 ## Deployment env vars
 Render (backend):
