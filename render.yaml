@@ -4,7 +4,7 @@ services:
     name: mcp-artifact-store-api
     runtime: python
     plan: free
-    buildCommand: pip install -r requirements.txt
+    buildCommand: pip install -r requirements.txt && alembic upgrade head
     startCommand: python main.py
     envVars:
       - key: DATABASE_URL
